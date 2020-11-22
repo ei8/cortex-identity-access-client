@@ -30,11 +30,11 @@ namespace ei8.Cortex.IdentityAccess.Client.Out
             this.requestProvider = requestProvider ?? Locator.Current.GetService<IRequestProvider>();
         }
 
-        public async Task<ActionValidationResult> CreateNeuron(string outBaseUrl, Guid neuronId, Guid regionId, Guid subjectId, CancellationToken token = default) =>
+        public async Task<ActionValidationResult> CreateNeuron(string outBaseUrl, Guid neuronId, Guid? regionId, Guid subjectId, CancellationToken token = default) =>
            await HttpValidationClient.exponentialRetryPolicy.ExecuteAsync(
                async () => await this.CreateNeuronInternal(outBaseUrl, neuronId, regionId, subjectId, token).ConfigureAwait(false));
 
-        private async Task<ActionValidationResult> CreateNeuronInternal(string outBaseUrl, Guid neuronId, Guid regionId, Guid subjectId, CancellationToken token = default)
+        private async Task<ActionValidationResult> CreateNeuronInternal(string outBaseUrl, Guid neuronId, Guid? regionId, Guid subjectId, CancellationToken token = default)
         {
             var data = new
             {
