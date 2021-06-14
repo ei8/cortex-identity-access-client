@@ -30,17 +30,17 @@ namespace ei8.Cortex.IdentityAccess.Client.Out
             this.requestProvider = requestProvider ?? Locator.Current.GetService<IRequestProvider>();
         }
 
-        public async Task<ActionValidationResult> CreateNeuron(string outBaseUrl, Guid neuronId, Guid? regionId, Guid subjectId, CancellationToken token = default) =>
+        public async Task<ActionValidationResult> CreateNeuron(string outBaseUrl, Guid neuronId, Guid? regionId, string userId, CancellationToken token = default) =>
            await HttpValidationClient.exponentialRetryPolicy.ExecuteAsync(
-               async () => await this.CreateNeuronInternal(outBaseUrl, neuronId, regionId, subjectId, token).ConfigureAwait(false));
+               async () => await this.CreateNeuronInternal(outBaseUrl, neuronId, regionId, userId, token).ConfigureAwait(false));
 
-        private async Task<ActionValidationResult> CreateNeuronInternal(string outBaseUrl, Guid neuronId, Guid? regionId, Guid subjectId, CancellationToken token = default)
+        private async Task<ActionValidationResult> CreateNeuronInternal(string outBaseUrl, Guid neuronId, Guid? regionId, string userId, CancellationToken token = default)
         {
             var data = new
             {
                 NeuronId = neuronId,
                 RegionId = regionId,
-                SubjectId = subjectId
+                UserId = userId
             };
 
             return await this.requestProvider.PostAsync<ActionValidationResult>(
@@ -50,15 +50,15 @@ namespace ei8.Cortex.IdentityAccess.Client.Out
                );
         }
 
-        public async Task<ActionValidationResult> UpdateNeuron(string outBaseUrl, Guid neuronId, Guid subjectId, CancellationToken token = default) =>
+        public async Task<ActionValidationResult> UpdateNeuron(string outBaseUrl, Guid neuronId, string userId, CancellationToken token = default) =>
            await HttpValidationClient.exponentialRetryPolicy.ExecuteAsync(
-               async () => await this.UpdateNeuronInternal(outBaseUrl, neuronId, subjectId, token).ConfigureAwait(false));
-        private async Task<ActionValidationResult> UpdateNeuronInternal(string outBaseUrl, Guid neuronId, Guid subjectId, CancellationToken token = default)
+               async () => await this.UpdateNeuronInternal(outBaseUrl, neuronId, userId, token).ConfigureAwait(false));
+        private async Task<ActionValidationResult> UpdateNeuronInternal(string outBaseUrl, Guid neuronId, string userId, CancellationToken token = default)
         {
             var data = new
             {
                 NeuronId = neuronId,
-                SubjectId = subjectId
+                UserId = userId
             };
 
             return await this.requestProvider.PostAsync<ActionValidationResult>(
@@ -68,16 +68,16 @@ namespace ei8.Cortex.IdentityAccess.Client.Out
                );
         }
 
-        public async Task<ActionValidationResult> ReadNeurons(string outBaseUrl, IEnumerable<Guid> neuronIds, Guid subjectId, CancellationToken token = default) =>
+        public async Task<ActionValidationResult> ReadNeurons(string outBaseUrl, IEnumerable<Guid> neuronIds, string userId, CancellationToken token = default) =>
            await HttpValidationClient.exponentialRetryPolicy.ExecuteAsync(
-               async () => await this.ReadNeuronsInternal(outBaseUrl, neuronIds, subjectId, token).ConfigureAwait(false));
+               async () => await this.ReadNeuronsInternal(outBaseUrl, neuronIds, userId, token).ConfigureAwait(false));
 
-        private async Task<ActionValidationResult> ReadNeuronsInternal(string outBaseUrl, IEnumerable<Guid> neuronIds, Guid subjectId, CancellationToken token = default)
+        private async Task<ActionValidationResult> ReadNeuronsInternal(string outBaseUrl, IEnumerable<Guid> neuronIds, string userId, CancellationToken token = default)
         {
             var data = new
             {
                 NeuronIds = neuronIds.ToArray(),
-                SubjectId = subjectId
+                UserId = userId
             };
 
             return await this.requestProvider.PostAsync<ActionValidationResult>(
