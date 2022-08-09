@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using ei8.Cortex.IdentityAccess.Common;
 using System.Collections.Generic;
 using System.Linq;
+using Polly.Retry;
 
 namespace ei8.Cortex.IdentityAccess.Client.Out
 {
@@ -15,7 +16,7 @@ namespace ei8.Cortex.IdentityAccess.Client.Out
     {
         private readonly IRequestProvider requestProvider;
 
-        private static Policy exponentialRetryPolicy = Policy
+        private static AsyncRetryPolicy exponentialRetryPolicy = Policy
             .Handle<Exception>()
             .WaitAndRetryAsync(
                 3,
