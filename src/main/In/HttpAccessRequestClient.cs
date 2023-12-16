@@ -27,15 +27,15 @@ namespace ei8.Cortex.IdentityAccess.Client.In
             this.requestProvider = requestProvider ?? Locator.Current.GetService<IRequestProvider>();
         }
 
-        public async Task CreateAccessRequestAsync(string baseUrl, Guid neuronId, string userId, CancellationToken token = default)
+        public async Task CreateAccessRequestAsync(string outBaseUrl, Guid neuronId, string userNeuronId, CancellationToken token = default) =>
+            await HttpAccessRequestClient.ExponentialRetryPolicy.ExecuteAsync(
+               async () => await this.CreateAccessRequestInternalAsync(outBaseUrl, neuronId, userNeuronId, token).ConfigureAwait(false));
+        public async Task CreateAccessRequestInternalAsync(string baseUrl, Guid neuronId, string userNeuronId, CancellationToken token = default)
         {
-            var requestUrl = $"{baseUrl}/accessRequest/neuron/{neuronId}";
-
-            await HttpAccessRequestClient.ExponentialRetryPolicy
-                    .ExecuteAsync(async () =>
-                    {
-                        await requestProvider.PostAsync(requestUrl, data: new { UserId = userId });
-                    });
+            await this.requestProvider.PostAsync(
+               $"{baseUrl}accessRequest/neuron/{neuronId}",
+               data: new { UserNeuronId = userNeuronId }
+               );
         }
     }
 }
